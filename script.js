@@ -117,20 +117,20 @@ function checkPixels() {
 		.then(res => {
 			if (res.color == drawingData.colors[currentY][currentX]) {
 	    		// kleur klopt, controleer volgende pixel
-	    		currentX++;
-	    		setTimeout( () => checkPixels(), 0);
-	    		return;
-	    	} else {
+				currentX++;
+				setTimeout( () => checkPixels(), 0);
+				return;
+			} else {
 	    		// kleur is fout, kleur wordt vervangen
-	    		setTimeout( () => drawPixel(), 0);
-	    		return;
-	    	}
-	    }).fail(res => {
+				setTimeout( () => drawPixel(), 0);
+				return;
+			}
+		}).fail(res => {
 	    	// een error, probeer opnieuw over 10s
-	    	currentX++;
-	    	setTimeout( () => checkPixels(), 10 * 1e3);
-	    	return;
-	    });
+			currentX++;
+			setTimeout( () => checkPixels(), 10 * 1e3);
+			return;
+		});
 	}, 1000);
 }
 
@@ -149,43 +149,43 @@ function drawPixel() {
 		.done( res => {
         	// tekenen is gelukt
         	// opnieuw proberen na 10s
-        	setTimeout(() => {
-        		checkPixels();
-        	}, res.wait_seconds * 1e3);
-        	console.log("Succes! Nieuwe poging over " + res.wait_seconds + " seconden.");
+			setTimeout(() => {
+				checkPixels();
+			}, res.wait_seconds * 1e3);
+			console.log("Succes! Nieuwe poging over " + res.wait_seconds + " seconden.");
 
         	// laat mensen weten dat het nog werkt
-        	secondsLeft = res.wait_seconds;
-        	intervalId = setInterval( () => {
-        		secondsLeft -= 10;
-        		console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
-        	}, 10 * 1e3);
-        	return;
-        })
+			secondsLeft = res.wait_seconds;
+			intervalId = setInterval( () => {
+				secondsLeft -= 10;
+				console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
+			}, 10 * 1e3);
+			return;
+		})
 		.error( res => {
 			if (res.responseJSON) {
 	        	// De aftelfunctie is niet gelukt
 	        	// Geef error-melding. Als er een http-error is (status 429)
 	        	// gebruik dan die waarde voor de volgende actie, anders opnieuw proberen in 10s
-	        	setTimeout(() => {
-	        		checkPixels();
-	        	}, Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) * 1e3);
-	        	console.log("Probleem! Nieuwe poging over " + Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) + " seconden.");
-	        	
+				setTimeout(() => {
+					checkPixels();
+				}, Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) * 1e3);
+				console.log("Probleem! Nieuwe poging over " + Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) + " seconden.");
+				
 	        	// Info voor de gebruiker
-	        	secondsLeft = Math.ceil(res.responseJSON.wait_seconds);
-	        	intervalId = setInterval( () => {
-	        		secondsLeft -= 10;
-	        		console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
-	        	}, 10 * 1e3);
-	        } else {
-	        	setTimeout(() => {
-	        		checkPixels();
-	        	}, 10* 1e3);
-	        	console.log("Probleem! Nieuwe poging over " + 10 + " seconden.");
-	        }
-	        return;
-	    });
+				secondsLeft = Math.ceil(res.responseJSON.wait_seconds);
+				intervalId = setInterval( () => {
+					secondsLeft -= 10;
+					console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
+				}, 10 * 1e3);
+			} else {
+				setTimeout(() => {
+					checkPixels();
+				}, 10* 1e3);
+				console.log("Probleem! Nieuwe poging over " + 10 + " seconden.");
+			}
+			return;
+		});
 
 	}, 500);
 }
