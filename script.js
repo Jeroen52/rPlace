@@ -116,17 +116,17 @@ function checkPixels() {
 		$.get("https://www.reddit.com/api/place/pixel.json?x=" + ax + "&y=" + ay)
 		.then(res => {
 			if (res.color == drawingData.colors[currentY][currentX]) {
-	    		// kleur klopt, controleer volgende pixel
+				// kleur klopt, controleer volgende pixel
 				currentX++;
 				setTimeout( () => checkPixels(), 0);
 				return;
 			} else {
-	    		// kleur is fout, kleur wordt vervangen
+				// kleur is fout, kleur wordt vervangen
 				setTimeout( () => drawPixel(), 0);
 				return;
 			}
 		}).fail(res => {
-	    	// een error, probeer opnieuw over 10s
+			// een error, probeer opnieuw over 10s
 			currentX++;
 			setTimeout( () => checkPixels(), 10 * 1e3);
 			return;
@@ -147,14 +147,14 @@ function drawPixel() {
 			headers: { "x-modhash": modhash }, data: { x: ax, y: ay, color: newColor }
 		})
 		.done( res => {
-        	// tekenen is gelukt
-        	// opnieuw proberen na 10s
+			// tekenen is gelukt
+			// opnieuw proberen na 10s
 			setTimeout(() => {
 				checkPixels();
 			}, res.wait_seconds * 1e3);
 			console.log("Succes! Nieuwe poging over " + res.wait_seconds + " seconden.");
 
-        	// laat mensen weten dat het nog werkt
+			// laat mensen weten dat het nog werkt
 			secondsLeft = res.wait_seconds;
 			intervalId = setInterval( () => {
 				secondsLeft -= 10;
@@ -164,15 +164,15 @@ function drawPixel() {
 		})
 		.error( res => {
 			if (res.responseJSON) {
-	        	// De aftelfunctie is niet gelukt
-	        	// Geef error-melding. Als er een http-error is (status 429)
-	        	// gebruik dan die waarde voor de volgende actie, anders opnieuw proberen in 10s
+				// De aftelfunctie is niet gelukt
+				// Geef error-melding. Als er een http-error is (status 429)
+				// gebruik dan die waarde voor de volgende actie, anders opnieuw proberen in 10s
 				setTimeout(() => {
 					checkPixels();
 				}, Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) * 1e3);
 				console.log("Probleem! Nieuwe poging over " + Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) + " seconden.");
 				
-	        	// Info voor de gebruiker
+				// Info voor de gebruiker
 				secondsLeft = Math.ceil(res.responseJSON.wait_seconds);
 				intervalId = setInterval( () => {
 					secondsLeft -= 10;
