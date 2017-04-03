@@ -106,21 +106,21 @@ function checkPixels() {
 		$.get("https://www.reddit.com/api/place/pixel.json?x=" + ax + "&y=" + ay)
 		.then(res => {
 			if (res.color == drawingData.colors[currentY][currentX]) {
-	    		// color correct, so check the next pixel
-	    		currentX++;
-	    		setTimeout( () => checkPixels(), 0);
-	    		return;
-	    	} else {
-	    		// color incorrect, so overwrite!
-	    		setTimeout( () => drawPixel(), 0);
-	    		return;
-	    	}
-	    }).fail(res => {
-	    	// some error, try another in 10 seconds
-	    	currentX++;
-	    	setTimeout( () => checkPixels(), 10 * 1e3);
-	    	return;
-	    })
+				// color correct, so check the next pixel
+				currentX++;
+				setTimeout( () => checkPixels(), 0);
+				return;
+			} else {
+				// color incorrect, so overwrite!
+				setTimeout( () => drawPixel(), 0);
+				return;
+			}
+		}).fail(res => {
+			// some error, try another in 10 seconds
+			currentX++;
+			setTimeout( () => checkPixels(), 10 * 1e3);
+			return;
+		})
 	}, 1000);
 }
 
@@ -137,45 +137,45 @@ function drawPixel() {
 			headers: { "x-modhash": modhash }, data: { x: ax, y: ay, color: newColor }
 		})
 		.done( res => {
-        	// drawing was succesfull
-        	// so try again after cooldown
-        	setTimeout(() => {
-        		checkPixels()
-        	}, res.wait_seconds * 1e3)
-        	console.log("Succes! Nieuwe poging over " + res.wait_seconds + " seconden.");
+			// drawing was succesfull
+			// so try again after cooldown
+			setTimeout(() => {
+				checkPixels()
+			}, res.wait_seconds * 1e3)
+			console.log("Succes! Nieuwe poging over " + res.wait_seconds + " seconden.");
 
-        	// and show an info message so people know it's still working
-        	secondsLeft = res.wait_seconds;
-        	intervalId = setInterval( () => {
-        		secondsLeft -= 10;
-        		console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
-        	}, 10 * 1e3)
-        	return;
-        })
+			// and show an info message so people know it's still working
+			secondsLeft = res.wait_seconds;
+			intervalId = setInterval( () => {
+				secondsLeft -= 10;
+				console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
+			}, 10 * 1e3)
+			return;
+		})
 		.error( res => {
 			if (res.responseJSON) {
-	        	// error, cooldown not passed probably
-	        	// give info message. If we received a cooldown error (status 429)
-	        	// use that value as the next action, else try again in ten seconds
-	        	setTimeout(() => {
-	        		checkPixels()
-	        	}, Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) * 1e3);
-	        	console.log("Probleem! Nieuwe poging over " + Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) + " seconden.");
-	        	
-	        	// and some info logging to the user
-	        	secondsLeft = Math.ceil(res.responseJSON.wait_seconds)
-	        	intervalId = setInterval( () => {
-	        		secondsLeft -= 10;
-	        		console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
-	        	}, 10 * 1e3)
-	        } else {
-	        	setTimeout(() => {
-	        		checkPixels()
-	        	}, 10* 1e3);
-	        	console.log("Probleem! Nieuwe poging over " + 10 + " seconden.");
-	        }
-	        return;
-	    });
+				// error, cooldown not passed probably
+				// give info message. If we received a cooldown error (status 429)
+				// use that value as the next action, else try again in ten seconds
+				setTimeout(() => {
+					checkPixels()
+				}, Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) * 1e3);
+				console.log("Probleem! Nieuwe poging over " + Math.max(Math.ceil(res.responseJSON.wait_seconds), 10) + " seconden.");
+				
+				// and some info logging to the user
+				secondsLeft = Math.ceil(res.responseJSON.wait_seconds)
+				intervalId = setInterval( () => {
+					secondsLeft -= 10;
+					console.log("Nog " + secondsLeft + " seconden tot de volgende actie!");
+				}, 10 * 1e3)
+			} else {
+				setTimeout(() => {
+					checkPixels()
+				}, 10* 1e3);
+				console.log("Probleem! Nieuwe poging over " + 10 + " seconden.");
+			}
+			return;
+		});
 
 	}, 500)
 }
