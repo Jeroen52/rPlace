@@ -1,3 +1,13 @@
+// ==UserScript==
+// @name			r/TheNetherlands r/place autoplace script
+// @version			1
+// @description		Plaats automatisch in de r/TheNetherlands en geallieerde territorium.
+// @namespace		https://github.com/Sadye/rPlace
+// @include			/^https?://((www|np|nl)\.)?reddit\.com*$/
+// @run-at			document-start
+// @updateURL		https://raw.githubusercontent.com/Sadye/rPlace/master/script.js?no-cache
+// @downloadURL		https://raw.githubusercontent.com/Sadye/rPlace/master/script.js?no-cache
+// ==/UserScript==
 var modhash = window.reddit.modhash;
 var currentVersion = 11;
 var drawingData = {
