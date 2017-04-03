@@ -3,7 +3,8 @@
 // @version			1
 // @description		Plaats automatisch in de r/TheNetherlands en geallieerde territorium.
 // @namespace		https://github.com/Sadye/rPlace
-// @include			/^https?://((www|np|nl)\.)?reddit\.com*$/
+// @include			*://*.reddit.com/r/place*
+// @include			*://*.reddit.com/place*
 // @run-at			document-start
 // @updateURL		https://raw.githubusercontent.com/Sadye/rPlace/master/script.js?no-cache
 // @downloadURL		https://raw.githubusercontent.com/Sadye/rPlace/master/script.js?no-cache
